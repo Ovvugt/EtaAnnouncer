@@ -1,6 +1,7 @@
-using ETA_announcer.Services;
+using EtaAnnouncer.Data;
+using EtaAnnouncer.Services;
 
-namespace ETA_announcer
+namespace EtaAnnouncer
 {
     public class Program
     {
@@ -8,7 +9,10 @@ namespace ETA_announcer
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            builder.Services.AddDbContext<IdentityContext>(options =>
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+            });
 
             builder.Services.AddControllers();
             builder.Services.AddScoped<IMapsService, MapsService>();

@@ -1,9 +1,9 @@
-﻿using static ETA_announcer.Controllers.TravelTimeController;
+﻿using static EtaAnnouncer.Controllers.TravelTimeController;
 using System.Text.Json;
 using System.Text;
-using ETA_announcer.Models;
+using EtaAnnouncer.Models;
 
-namespace ETA_announcer.Services
+namespace EtaAnnouncer.Services
 {
     public interface IMapsService 
     {

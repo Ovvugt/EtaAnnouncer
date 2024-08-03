@@ -1,37 +1,18 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace ETA_announcer.Models
+namespace EtaAnnouncer.Models
 {
-    public class GoogleComputeRoutesResponse
-    {
-        public Route[] Routes { get; set; }
-    }
+    public record GoogleComputeRoutesResponse(Route[] Routes);
 
-    public class Route
-    {
-        public string Duration { get; set; }
-    }
+    public record Route(string Duration);
 
-    public class LatLng
-    {
-        public double Latitude { get; set; }
-        public double Longitude { get; set; }
-    }
+    public record LatLng(double Latitude, double Longitude);
 
-    public class Location
-    {
-        public LatLng LatLng { get; set; }
-    }
+    public record Location(LatLng LatLng);
 
-    public class Origin
-    {
-        public Location Location { get; set; }
-    }
+    public record Origin(Location Location);
 
-    public class Destination
-    {
-        public Location Location { get; set; }
-    }
+    public record Destination(Location Location);
 
     public enum RoutingPreference
     {
@@ -51,13 +32,8 @@ namespace ETA_announcer.Models
         TRANSIT
     }
 
-    public class GoogleComputeRoutesRequest
-    {
-        public Origin Origin { get; set; }
-        public Destination Destination { get; set; }
-        [JsonConverter(typeof(JsonStringEnumConverter))]
-        public RouteTravelMode TravelMode { get; set; }
-        [JsonConverter(typeof(JsonStringEnumConverter))]
-        public RoutingPreference RoutingPreference { get; set; }
-    }
+    public record GoogleComputeRoutesRequest(Origin Origin,
+                                             Destination Destination,
+                                             [property: JsonConverter(typeof(JsonStringEnumConverter))] RouteTravelMode TravelMode,
+                                             [property: JsonConverter(typeof(JsonStringEnumConverter))] RoutingPreference RoutingPreference);
 }

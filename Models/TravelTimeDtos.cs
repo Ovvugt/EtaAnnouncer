@@ -1,18 +1,10 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace ETA_announcer.Models
+namespace EtaAnnouncer.Models
 {
-    public class TravelTimeResponse
-    {
-        public DateTime TimeOfArrival { get; set; }
-        public int DurationMinutes { get; set; }
-    }
+    public record TravelTimeResponse(DateTime TimeOfArrival, int DurationMinutes);
 
-    public class TravelTimeRequest
-    {
-        public Origin Origin { get; set; }
-        [JsonConverter(typeof(JsonStringEnumConverter))]
-        public RouteTravelMode TravelMode { get; set; }
-        public Guid DestinationUserId { get; set; }
-    }
+    public record TravelTimeRequest(Origin Origin,
+                                    [property: JsonConverter(typeof(JsonStringEnumConverter))] RouteTravelMode TravelMode,
+                                    Guid DestinationUserId);
 }

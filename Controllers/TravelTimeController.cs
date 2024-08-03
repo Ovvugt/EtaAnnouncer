@@ -1,8 +1,8 @@
-﻿using ETA_announcer.Models;
-using ETA_announcer.Services;
+﻿using EtaAnnouncer.Models;
+using EtaAnnouncer.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ETA_announcer.Controllers
+namespace EtaAnnouncer.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -19,13 +19,10 @@ namespace ETA_announcer.Controllers
                 return Problem();
             }
 
-            var requestBody = new GoogleComputeRoutesRequest()
-            {
-               TravelMode = request.TravelMode,
-               RoutingPreference = RoutingPreference.TRAFFIC_AWARE_OPTIMAL,
-               Origin = request.Origin,
-               Destination = new Destination { Location = new Location { LatLng = new LatLng { Latitude = 52.06159976913799, Longitude = 5.106039907536568 } } }
-            };
+            var requestBody = new GoogleComputeRoutesRequest(request.Origin,
+                                                             new Destination(new Location(new LatLng(52.06159976913799, 5.106039907536568))),
+                                                             request.TravelMode,
+                                                             RoutingPreference.TRAFFIC_AWARE_OPTIMAL);
 
             var routes = await mapsService.GetRouteAsync(requestBody, apiKey);
             if (routes == null)
@@ -37,11 +34,7 @@ namespace ETA_announcer.Controllers
             var durationMinutes = (int)Math.Round(routeSeconds / 60.0);
             logger.LogInformation("Got route information, duration is {DurationMinutes}", durationMinutes);
 
-            return new TravelTimeResponse
-            {
-                TimeOfArrival = DateTime.UtcNow.AddSeconds(routeSeconds).ToLocalTime(),
-                DurationMinutes = durationMinutes
-            };
+            return new TravelTimeResponse(DateTime.UtcNow.AddSeconds(routeSeconds).ToLocalTime(), durationMinutes);
         }
     }
 }
