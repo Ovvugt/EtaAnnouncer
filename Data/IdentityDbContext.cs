@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EtaAnnouncer.Data
 {
-    public class IdentityDbContext(DbContextOptions<IdentityDbContext> options) : IdentityDbContext<IdentityUser>(options)
+    public class IdentityDbContext(DbContextOptions<IdentityDbContext> options) : IdentityDbContext<Member>(options)
     {
         public DbSet<RefreshToken> RefreshTokens { get; set; }
     }

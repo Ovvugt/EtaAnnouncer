@@ -1,4 +1,5 @@
-﻿using EtaAnnouncer.Services;
+﻿using EtaAnnouncer.Models;
+using EtaAnnouncer.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +9,7 @@ namespace EtaAnnouncer.Controllers
     [AllowAnonymous]
     [Route("api/[controller]")]
     [ApiController]
-    public class AccountController(UserManager<IdentityUser> userManager, TokenGeneratorService tokenService, RefreshTokenService refreshTokenService) : ControllerBase
+    public class AccountController(UserManager<Member> userManager, TokenGeneratorService tokenService, RefreshTokenService refreshTokenService) : ControllerBase
     {
         public record RegisterModel(string Username, string Email, string Password);
         [HttpPost("register")]
@@ -23,13 +24,13 @@ namespace EtaAnnouncer.Controllers
             {
                 return Conflict();
             }
-            var newUser = new IdentityUser
+            var newUser = new Member
             {
                 UserName = registerModel.Username,
                 Email = registerModel.Email
             };
             var result = await userManager.CreateAsync(newUser, registerModel.Password);
-
+            
             if (!result.Succeeded)
             {
                 foreach (var error in result.Errors)

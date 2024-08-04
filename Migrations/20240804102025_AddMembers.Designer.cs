@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EtaAnnouncer.Migrations
 {
     [DbContext(typeof(IdentityDbContext))]
-    [Migration("20240803235725_AddRefreshTokens")]
-    partial class AddRefreshTokens
+    [Migration("20240804102025_AddMembers")]
+    partial class AddMembers
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

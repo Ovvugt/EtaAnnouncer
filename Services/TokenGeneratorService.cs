@@ -10,7 +10,8 @@ namespace EtaAnnouncer.Services
         public string GenerateAccessToken(string username)
         {
             var claims = new[]
-{
+            {
+                new Claim(ClaimTypes.Name, username),
                 new Claim(JwtRegisteredClaimNames.Sub, username),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };

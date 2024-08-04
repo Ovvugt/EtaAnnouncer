@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace EtaAnnouncer.Migrations
 {
     /// <inheritdoc />
-    public partial class AddRefreshTokens : Migration
+    public partial class AddMembers : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

@@ -1,4 +1,5 @@
 using EtaAnnouncer.Data;
+using EtaAnnouncer.Models;
 using EtaAnnouncer.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace EtaAnnouncer
 {
@@ -15,9 +17,15 @@ namespace EtaAnnouncer
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
             builder.Services.AddDbContext<IdentityDbContext>(options =>
             {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+                options.UseSqlServer(connectionString);
+            });
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+            {
+                options.UseSqlServer(connectionString);
             });
 
             var passwordOptions = new PasswordOptions
@@ -38,7 +46,8 @@ namespace EtaAnnouncer
                 RequireDigit = false
             };
 
-            builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+
+            builder.Services.AddIdentity<Member, IdentityRole>(options =>
             {
                 options.Password = passwordOptions;
 #if DEBUG
@@ -72,7 +81,11 @@ namespace EtaAnnouncer
                 };
             });
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+                });
             builder.Services.AddScoped<IMapsService, MapsService>();
             builder.Services.AddSingleton(new TokenGeneratorService(builder.Configuration["Jwt:Key"]!,
                                                                     builder.Configuration["Jwt:Issuer"]!,
@@ -84,12 +97,16 @@ namespace EtaAnnouncer
                 .RequireAuthenticatedUser()
                 .Build());
 
+            builder.Services.AddAutoMapper(typeof(MappingProfile));
+
             var app = builder.Build();
 
             using var scope = app.Services.CreateScope();
             var services = scope.ServiceProvider;
             var identityContext = services.GetRequiredService<IdentityDbContext>();
             identityContext.Database.Migrate();
+            var appContext = services.GetRequiredService<ApplicationDbContext>();
+            appContext.Database.Migrate();
 
             app.UseHttpsRedirection();
             app.UseAuthentication();
