@@ -8,6 +8,11 @@ on:
     inputs:
       myInput:
         default: 'test'
+        type: choice
+        options:
+          - test
+          - test1
+          - test2
 
 jobs:
   build:
